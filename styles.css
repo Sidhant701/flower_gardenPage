@@ -1,0 +1,563 @@
+/**
+ * Sunflower Garden Styles
+ * 
+ * CSS Custom Properties (CSS Variables) are used extensively for:
+ * - Easy theming and customization
+ * - Responsive scaling
+ * - Reduced code duplication
+ * 
+ * Structure:
+ * 1. CSS Custom Properties (root variables)
+ * 2. Base/Reset styles
+ * 3. Sun component
+ * 4. Garden layout
+ * 5. Sunflower components (base, variants)
+ * 6. Animations
+ * 7. Responsive breakpoints
+ */
+
+/* ========== 1. CSS CUSTOM PROPERTIES ========== */
+:root {
+    /* Colors */
+    --color-sky-light: #87ceeb;
+    --color-sky-mid: #b8e4f0;
+    --color-grass-light: #7ab856;
+    --color-grass-dark: #5a9a3a;
+    --color-stem: #2d5016;
+    --color-leaf-light: #3aa335;
+    --color-leaf-dark: #2b7f2d;
+    --color-petal: #ffd700;
+    --color-petal-outline: #d4a800;
+    --color-petal-back: #e6c200;
+    --color-petal-mid: #f5d000;
+    --color-center-light: #8b6914;
+    --color-center-dark: #5a4a0a;
+    --color-sun-core: #fff7b0;
+    --color-sun-mid: #ffeb3b;
+    --color-sun-outer: #ffc107;
+    --color-sun-edge: #ff9800;
+    
+    /* Sizes - Base (desktop) */
+    --garden-height: 420px;
+    --ground-height: 25%;
+    
+    /* Sun */
+    --sun-size: 80px;
+    --sun-top: 30px;
+    --sun-right: 50px;
+    
+    /* Full-size flower */
+    --stem-height: 220px;
+    --stem-width: 8px;
+    --head-size: 120px;
+    --flower-width: 200px;
+    --flower-height: 360px;
+    --petal-width: 20px;
+    --petal-height: 60px;
+    --center-size: 30px;
+    --center-top: 45px;
+    --leaf-width: 62px;
+    --leaf-height: 28px;
+    --leaf-left-bottom: 115px;
+    --leaf-right-bottom: 155px;
+    --leaf-left-rotate: -20deg;
+    --leaf-right-rotate: 28deg;
+    
+    /* Animation */
+    --sway-duration: 4.5s;
+    --sun-glow-duration: 3s;
+}
+
+/* ========== 2. BASE STYLES ========== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background: linear-gradient(
+        180deg,
+        var(--color-sky-light) 0%,
+        var(--color-sky-mid) 60%,
+        var(--color-grass-light) 85%,
+        var(--color-grass-dark) 100%
+    );
+    overflow: hidden;
+}
+
+/* ========== 3. SUN COMPONENT ========== */
+.sun {
+    position: fixed;
+    top: clamp(10px, 3vh, var(--sun-top));
+    right: clamp(10px, 5vw, var(--sun-right));
+    width: clamp(40px, 8vw, var(--sun-size));
+    height: clamp(40px, 8vw, var(--sun-size));
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        var(--color-sun-core) 0%,
+        var(--color-sun-mid) 30%,
+        var(--color-sun-outer) 70%,
+        var(--color-sun-edge) 100%
+    );
+    box-shadow: 
+        0 0 clamp(15px, 3vw, 30px) clamp(5px, 1vw, 10px) rgba(255, 235, 59, 0.6),
+        0 0 clamp(30px, 6vw, 60px) clamp(10px, 2vw, 20px) rgba(255, 193, 7, 0.4),
+        0 0 clamp(50px, 10vw, 100px) clamp(20px, 4vw, 40px) rgba(255, 152, 0, 0.2),
+        0 0 clamp(75px, 15vw, 150px) clamp(30px, 6vw, 60px) rgba(255, 235, 59, 0.1);
+    z-index: 10;
+    animation: sunGlow var(--sun-glow-duration) ease-in-out infinite alternate;
+}
+
+.sun::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.sun::after {
+    content: '';
+    position: absolute;
+    top: 12%;
+    left: 18%;
+    width: 25%;
+    height: 18%;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+/* ========== 4. GARDEN LAYOUT ========== */
+.garden {
+    position: relative;
+    width: 100%;
+    height: var(--garden-height);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Ground overlay to cover stem bottoms */
+.garden::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -10%;
+    width: 120%;
+    height: var(--ground-height);
+    background: linear-gradient(180deg, var(--color-grass-light) 0%, var(--color-grass-dark) 100%);
+    z-index: 0;
+}
+
+.row {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    gap: 0;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+}
+
+.row--far-back {
+    z-index: 1;
+    gap: -15px;
+    transform: translateX(40px);
+}
+
+.row--back {
+    z-index: 2;
+    gap: -10px;
+    transform: translateX(-35px);
+}
+
+.row--front {
+    z-index: 3;
+    gap: -20px;
+}
+
+/* ========== 5. SUNFLOWER COMPONENTS ========== */
+
+/* --- Base Sunflower --- */
+.sunflower {
+    --local-stem-height: var(--stem-height);
+    --local-stem-width: var(--stem-width);
+    --local-head-size: var(--head-size);
+    --local-petal-width: var(--petal-width);
+    --local-petal-height: var(--petal-height);
+    --local-center-size: var(--center-size);
+    --local-center-top: var(--center-top);
+    --local-leaf-width: var(--leaf-width);
+    --local-leaf-height: var(--leaf-height);
+    --local-leaf-left-bottom: var(--leaf-left-bottom);
+    --local-leaf-right-bottom: var(--leaf-right-bottom);
+    --local-head-offset: 55px;
+    
+    position: relative;
+    width: var(--flower-width);
+    height: var(--flower-height);
+}
+
+.stem {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: var(--local-stem-width);
+    height: var(--local-stem-height);
+    background: var(--color-stem);
+    transform: translateX(-50%);
+    border-radius: 999px;
+    z-index: 1;
+}
+
+.head {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--local-stem-height) - var(--local-head-offset));
+    width: var(--local-head-size);
+    height: var(--local-head-size);
+    transform: translateX(-50%);
+    transform-origin: 50% 100%;
+    animation: sway var(--sway-duration) ease-in-out infinite;
+    z-index: 3;
+}
+
+.petals {
+    position: absolute;
+    inset: 0;
+}
+
+.petal {
+    position: absolute;
+    width: var(--local-petal-width);
+    height: var(--local-petal-height);
+    background: var(--color-petal);
+    border-radius: 50% 50% 50% 0;
+    left: 50%;
+    top: calc(var(--local-petal-height) * 0.167);
+    margin-left: calc(var(--local-petal-width) * -0.5);
+    transform-origin: calc(var(--local-petal-width) * 0.5) calc(var(--local-petal-height) * 0.833);
+    border: 1px solid var(--color-petal-outline);
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.center {
+    position: absolute;
+    top: var(--local-center-top);
+    left: 50%;
+    width: var(--local-center-size);
+    height: var(--local-center-size);
+    background: radial-gradient(circle, var(--color-center-light) 0%, var(--color-center-dark) 100%);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Petal rotations */
+.petal:nth-child(1)  { transform: rotate(0deg); }
+.petal:nth-child(2)  { transform: rotate(30deg); }
+.petal:nth-child(3)  { transform: rotate(60deg); }
+.petal:nth-child(4)  { transform: rotate(90deg); }
+.petal:nth-child(5)  { transform: rotate(120deg); }
+.petal:nth-child(6)  { transform: rotate(150deg); }
+.petal:nth-child(7)  { transform: rotate(180deg); }
+.petal:nth-child(8)  { transform: rotate(210deg); }
+.petal:nth-child(9)  { transform: rotate(240deg); }
+.petal:nth-child(10) { transform: rotate(270deg); }
+.petal:nth-child(11) { transform: rotate(300deg); }
+.petal:nth-child(12) { transform: rotate(330deg); }
+
+/* --- Leaves --- */
+.leaf {
+    position: absolute;
+    left: 50%;
+    width: var(--local-leaf-width);
+    height: var(--local-leaf-height);
+    background: linear-gradient(135deg, var(--color-leaf-light), var(--color-leaf-dark));
+    border-radius: 70px 10px 70px 10px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    z-index: 2;
+}
+
+.leaf::after {
+    content: '';
+    position: absolute;
+    left: 16%;
+    top: 50%;
+    width: 68%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-50%) rotate(-10deg);
+    border-radius: 999px;
+}
+
+.leaf--left {
+    bottom: var(--local-leaf-left-bottom);
+    transform-origin: 100% 100%;
+    transform: translateX(calc(-100% - var(--local-stem-width) * 0.5 + 8px)) rotate(var(--leaf-left-rotate));
+}
+
+.leaf--right {
+    bottom: var(--local-leaf-right-bottom);
+    transform-origin: 0% 100%;
+    transform: translateX(calc(var(--local-stem-width) * 0.5)) rotate(var(--leaf-right-rotate));
+}
+
+/* --- Small Flower Variant --- */
+.sunflower--small {
+    --local-stem-height: 175px;
+    --local-stem-width: 6px;
+    --local-head-size: 90px;
+    --local-petal-width: 16px;
+    --local-petal-height: 48px;
+    --local-center-size: 24px;
+    --local-center-top: 34px;
+    --local-leaf-width: 50px;
+    --local-leaf-height: 22px;
+    --local-leaf-left-bottom: 90px;
+    --local-leaf-right-bottom: 125px;
+    --local-head-offset: 45px;
+    width: 130px;
+    height: 280px;
+}
+
+.sunflower--small .petal {
+    border-width: 0.75px;
+}
+
+/* --- Tiny Flower Variant --- */
+.sunflower--tiny {
+    --local-stem-height: 140px;
+    --local-stem-width: 5px;
+    --local-head-size: 70px;
+    --local-petal-width: 12px;
+    --local-petal-height: 36px;
+    --local-center-size: 18px;
+    --local-center-top: 26px;
+    --local-leaf-width: 40px;
+    --local-leaf-height: 18px;
+    --local-leaf-left-bottom: 70px;
+    --local-leaf-right-bottom: 95px;
+    --local-head-offset: 35px;
+    width: 100px;
+    height: 220px;
+}
+
+.sunflower--tiny .petal {
+    border-width: 0.5px;
+}
+
+/* Row-based petal colors for depth effect */
+.row--far-back .petal { background: var(--color-petal-back); }
+.row--back .petal { background: var(--color-petal-mid); }
+.row--front .petal { background: var(--color-petal); }
+
+/* ========== 6. ANIMATIONS ========== */
+@keyframes sway {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    50% { transform: translateX(-50%) rotate(5deg); }
+}
+
+@keyframes sunGlow {
+    from {
+        filter: brightness(1);
+        transform: scale(1);
+    }
+    to {
+        filter: brightness(1.1);
+        transform: scale(1.05);
+    }
+}
+
+/* ========== 7. RESPONSIVE BREAKPOINTS ========== */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+    :root {
+        --garden-height: 350px;
+        --sun-size: 70px;
+        --sun-top: 25px;
+        --sun-right: 40px;
+        --stem-height: 180px;
+        --head-size: 100px;
+        --flower-width: 140px;
+        --flower-height: 300px;
+    }
+    
+    .sunflower--small {
+        --local-stem-height: 145px;
+        --local-head-size: 75px;
+        width: 100px;
+        height: 230px;
+    }
+    
+    .sunflower--tiny {
+        --local-stem-height: 115px;
+        --local-head-size: 55px;
+        width: 75px;
+        height: 180px;
+    }
+    
+    .row--front { gap: -30px; }
+    .row--back { gap: -20px; }
+    .row--far-back { gap: -25px; }
+}
+
+/* Phone Landscape / Small Tablet (≤768px) */
+@media (max-width: 768px) {
+    :root {
+        --garden-height: 300px;
+        --ground-height: 30%;
+        --sun-size: 65px;
+        --sun-top: 20px;
+        --sun-right: 35px;
+        --stem-height: 150px;
+        --head-size: 80px;
+        --flower-width: 100px;
+        --flower-height: 250px;
+        --petal-width: 14px;
+        --petal-height: 42px;
+        --center-size: 22px;
+        --center-top: 30px;
+        --leaf-width: 45px;
+        --leaf-height: 20px;
+    }
+    
+    .sunflower--small {
+        --local-stem-height: 120px;
+        --local-head-size: 60px;
+        --local-leaf-width: 38px;
+        --local-leaf-height: 17px;
+        width: 80px;
+        height: 190px;
+    }
+    
+    .sunflower--tiny {
+        --local-stem-height: 95px;
+        --local-head-size: 45px;
+        --local-leaf-width: 32px;
+        --local-leaf-height: 14px;
+        width: 60px;
+        height: 150px;
+    }
+    
+    .row--front { gap: -40px; }
+    .row--back { gap: -30px; transform: translateX(-25px); }
+    .row--far-back { gap: -35px; transform: translateX(30px); }
+}
+
+/* Phone Portrait (≤480px) */
+@media (max-width: 480px) {
+    :root {
+        --garden-height: 280px;
+        --ground-height: 35%;
+        --sun-size: 60px;
+        --sun-top: 20px;
+        --sun-right: 30px;
+        --stem-height: 130px;
+        --head-size: 65px;
+        --flower-width: 70px;
+        --flower-height: 220px;
+        --petal-width: 11px;
+        --petal-height: 34px;
+        --center-size: 18px;
+        --center-top: 24px;
+        --leaf-width: 32px;
+        --leaf-height: 14px;
+        --leaf-left-bottom: 70px;
+        --leaf-right-bottom: 95px;
+    }
+    
+    .sunflower {
+        --local-head-offset: 40px;
+    }
+    
+    .sunflower--small {
+        --local-stem-height: 105px;
+        --local-head-size: 50px;
+        --local-leaf-width: 26px;
+        --local-leaf-height: 12px;
+        --local-leaf-left-bottom: 55px;
+        --local-leaf-right-bottom: 75px;
+        width: 55px;
+        height: 170px;
+    }
+    
+    .sunflower--tiny {
+        --local-stem-height: 85px;
+        --local-head-size: 38px;
+        --local-leaf-width: 22px;
+        --local-leaf-height: 10px;
+        --local-leaf-left-bottom: 45px;
+        --local-leaf-right-bottom: 62px;
+        width: 45px;
+        height: 135px;
+    }
+    
+    .row--front { gap: -35px; }
+    .row--back { gap: -28px; transform: translateX(-18px); }
+    .row--far-back { gap: -25px; transform: translateX(20px); }
+}
+
+/* Very Small Phones (≤360px) */
+@media (max-width: 360px) {
+    :root {
+        --garden-height: 250px;
+        --ground-height: 40%;
+        --sun-size: 50px;
+        --sun-top: 15px;
+        --sun-right: 20px;
+        --stem-height: 110px;
+        --head-size: 55px;
+        --flower-width: 55px;
+        --flower-height: 180px;
+        --leaf-width: 26px;
+        --leaf-height: 12px;
+        --leaf-left-bottom: 60px;
+        --leaf-right-bottom: 80px;
+    }
+    
+    .sunflower--small {
+        --local-stem-height: 90px;
+        --local-head-size: 42px;
+        --local-leaf-width: 22px;
+        --local-leaf-height: 10px;
+        --local-leaf-left-bottom: 48px;
+        --local-leaf-right-bottom: 65px;
+        width: 45px;
+        height: 145px;
+    }
+    
+    .sunflower--tiny {
+        --local-stem-height: 72px;
+        --local-head-size: 32px;
+        --local-leaf-width: 18px;
+        --local-leaf-height: 8px;
+        --local-leaf-left-bottom: 38px;
+        --local-leaf-right-bottom: 52px;
+        width: 38px;
+        height: 115px;
+    }
+    
+    .row--front { gap: -30px; }
+    .row--back { gap: -24px; }
+    .row--far-back { gap: -22px; }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .sun,
+    .head {
+        animation: none;
+    }
+}
